@@ -2,6 +2,13 @@
 
 An attempt to create an unbeatable tic tac toe opponent using the Minimax Algorithm
 
+## To-do
+
+- Work on tic tac toe minimax
+- Make this app prettier
+
+Everything below this is created by create-react-app README
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

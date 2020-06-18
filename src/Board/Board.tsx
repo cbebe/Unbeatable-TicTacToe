@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import "./Board.css";
 import BoardCell from "./BoardCell/BoardCell";
+import Pos from "../Minimax/Position";
 
 const WIN_CONDITIONS = [
   [0, 1, 2],
@@ -14,38 +15,40 @@ const WIN_CONDITIONS = [
   [2, 4, 6],
 ];
 
-const emptyStringArray = (length: number) => {
-  return Array(length).join(".").split(".");
+const emptyBoard = () => {
+  const board = [];
+  for (let i = 0; i < 9; i++) board.push(Pos.blank);
+  return board;
 };
 
 const Board = () => {
-  const [cells, setCells] = useState(emptyStringArray(9));
-  const [xTurn, setXTurn] = useState(false);
+  const [cells, setCells] = useState(emptyBoard());
+  const [playerTurn, setPlayerTurn] = useState(false);
   const [win, setWin] = useState(false);
   const [draw, setDraw] = useState(false);
 
   const handleCellClick = (idx: number) => {
     setCells(cells => {
-      cells[idx] = xTurn ? "x" : "o";
+      cells[idx] = playerTurn ? Pos.player : Pos.bot;
       return cells;
     });
-    setXTurn(xTurn => !xTurn);
+    setPlayerTurn(xTurn => !xTurn);
   };
 
   const restartGame = () => {
     setWin(false);
     setDraw(false);
-    setCells(emptyStringArray(9));
+    setCells(emptyBoard());
   };
 
   useEffect(() => {
-    const player = !xTurn ? "x" : "o";
+    const player = !playerTurn ? Pos.player : Pos.bot;
     const win = WIN_CONDITIONS.some(combo =>
       combo.every(idx => cells[idx] === player)
     );
     if (win) setWin(true);
-    else if (!cells.some(cell => cell === "")) setDraw(true);
-  }, [cells, xTurn]);
+    else if (!cells.some(cell => cell === Pos.blank)) setDraw(true);
+  }, [cells, playerTurn]);
 
   return (
     <>
@@ -53,14 +56,14 @@ const Board = () => {
         <div className='grid'>
           {cells.map((cell, i) => (
             <BoardCell key={i} idx={i} onClickEvent={handleCellClick}>
-              {cell}
+              {cell === Pos.blank ? "" : cell === Pos.player ? "x" : "o"}
             </BoardCell>
           ))}
         </div>
       </div>
       {win || draw ? (
         <div className='pop-up'>
-          {draw ? "Draw!" : `${xTurn ? "o" : "x"} won!`}
+          {draw ? "Draw!" : `${playerTurn ? "o" : "x"} won!`}
           <button onClick={restartGame}>Restart</button>
         </div>
       ) : null}
