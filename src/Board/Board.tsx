@@ -21,6 +21,8 @@ const emptyStringArray = (length: number) => {
 const Board = () => {
   const [cells, setCells] = useState(emptyStringArray(9));
   const [xTurn, setXTurn] = useState(false);
+  const [win, setWin] = useState(false);
+  const [draw, setDraw] = useState(false);
 
   const handleCellClick = (idx: number) => {
     setCells(cells => {
@@ -30,13 +32,19 @@ const Board = () => {
     setXTurn(xTurn => !xTurn);
   };
 
+  const restartGame = () => {
+    setWin(false);
+    setDraw(false);
+    setCells(emptyStringArray(9));
+  };
+
   useEffect(() => {
     const player = !xTurn ? "x" : "o";
     const win = WIN_CONDITIONS.some(combo =>
       combo.every(idx => cells[idx] === player)
     );
-    if (win) {
-    }
+    if (win) setWin(true);
+    else if (!cells.some(cell => cell === "")) setDraw(true);
   }, [cells, xTurn]);
 
   return (
@@ -50,7 +58,12 @@ const Board = () => {
           ))}
         </div>
       </div>
-      <div></div>
+      {win || draw ? (
+        <div className='pop-up'>
+          {draw ? "Draw!" : `${xTurn ? "o" : "x"} won!`}
+          <button onClick={restartGame}>Restart</button>
+        </div>
+      ) : null}
     </>
   );
 };
