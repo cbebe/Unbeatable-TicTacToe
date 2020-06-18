@@ -1,0 +1,11 @@
+.main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.grid {
+  display: flex;
+  width: 16rem;
+  flex-wrap: wrap;
+}
